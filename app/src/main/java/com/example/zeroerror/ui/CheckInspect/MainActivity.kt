@@ -1,6 +1,8 @@
 package com.example.zeroerror.ui.CheckInspect
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -43,6 +45,9 @@ class MainActivity : AppCompatActivity() {
             title = "Scan Inspect Id"
             setVisible(true)
         }
+        if(applicationContext.checkSelfPermission(Manifest.permission.CAMERA)==PackageManager.PERMISSION_DENIED){
+            this.requestPermissions(arrayOf(Manifest.permission.CAMERA), 123)
+        }
 
         setContentView(binding.root)
     }
@@ -67,6 +72,14 @@ class MainActivity : AppCompatActivity() {
             barcodeView.setStatusText(result.text)
             beepManager.playBeepSoundAndVibrate()
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onResume() {
