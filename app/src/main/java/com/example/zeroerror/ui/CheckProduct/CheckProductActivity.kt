@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import com.example.zeroerror.R
 import com.example.zeroerror.databinding.ActivityCheckproductBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CheckProductActivity: AppCompatActivity() {
 
     private lateinit var binding: ActivityCheckproductBinding
