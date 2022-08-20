@@ -148,6 +148,10 @@ class ScanProductFragment : Fragment(){
             // 인식한 바코드가 orderList에 없는 경우 - 잘못된 상품
             else{
                 binding.tvCurrentProductName.text = getString(R.string.product_list_current_check)
+
+                // alert dialog - 사용자에게 잘못된 상품임을 경고
+                val wrongAlertDialog = WrongProductAlertDialogFragment()
+                wrongAlertDialog.show(childFragmentManager,WrongProductAlertDialogFragment.TAG )
             }
 
             barcodeView.setStatusText(result.text)
