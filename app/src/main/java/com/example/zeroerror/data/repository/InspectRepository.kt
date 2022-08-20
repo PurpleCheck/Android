@@ -1,7 +1,6 @@
 package com.example.zeroerror.data.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.zeroerror.data.model.Inspect
 import com.example.zeroerror.data.persistence.InspectDao
 import javax.inject.Inject

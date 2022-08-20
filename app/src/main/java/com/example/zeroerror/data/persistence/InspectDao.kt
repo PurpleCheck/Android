@@ -1,10 +1,8 @@
 package com.example.zeroerror.data.persistence
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import com.example.zeroerror.data.model.Inspect
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface InspectDao {
