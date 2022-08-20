@@ -20,7 +20,7 @@ interface InspectDao {
     fun getTotalCount(): LiveData<Int>
 
     @Query("SELECT check_count from `inspect`")
-    suspend fun getCheckCount(): Int
+    fun getCheckCount(): LiveData<Int>
 
     @Delete
     suspend fun deleteInspectItem(inspectItem: Inspect)
