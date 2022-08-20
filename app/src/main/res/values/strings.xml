@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DoubleCheckApp</string>
+    <string name="app_name">ZeroError</string>
 
     <string name="product_list_current_check">방금 검수한 상품 : </string>
     <string name="product_list_title">검수할 주문 내역 목록이에요</string>
