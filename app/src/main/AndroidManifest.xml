@@ -29,6 +29,8 @@
         <activity android:name=".ui.CheckProduct.CheckProductActivity"
             android:exported="true">
         </activity>
+        <activity android:name=".ui.CheckTracking.CheckTrackingActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>
