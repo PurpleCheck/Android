@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvProductListTitle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:text="@string/product_list_title"
+        app:layout_constraintBottom_toTopOf="@+id/tvProductListInfo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="1" />
+
+    <TextView
+        android:id="@+id/tvProductListInfo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:text="@string/product_list_info"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/rvProductList"
+        app:layout_constraintTop_toBottomOf="@+id/tvProductListTitle"
+        app:layout_constraintVertical_weight="1" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvProductList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        android:clipToPadding="false"
+        android:elevation="3dp"
+        android:outlineProvider="bounds"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvProductListInfo"
+        app:layout_constraintVertical_weight="14" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

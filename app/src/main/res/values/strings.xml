@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">ZeroError</string>
+
+    <string name="product_list_current_check">방금 검수한 상품 : </string>
+    <string name="product_list_title">검수할 주문 내역 목록이에요</string>
+    <string name="product_list_info">각 상품당 수량에 맞게 검수가 완료되면 \n상품 상자가 회색으로 바뀌어요</string>
+    <string name="product_list_item_barcode">상품 바코드 ID : </string>
+    <string name="product_list_wrong_product_dialog">주문 내역에 없는 상품입니다.\n해당 검수를 미루시겠습니까?</string>
+    <string name="product_list_dialog_ok">예 미룰게요</string>
+    <string name="product_list_dialog_no">아니요 계속할게요</string>
+    <string name="product_list_comment1">1번 멘트</string>
+    <string name="product_list_comment2">2번 멘트</string>
+    <string name="product_list_comment3">3번 멘트</string>
+    <string name="product_list_comment4">4번 멘트</string>
+    <string name="product_list_comment5">5번 멘트</string>
+
+
+    <string name="invoice_confirm">모든 상품과 송장 검수가 완료되었습니다</string>
+    <string name="invoice_confirm_ok">확인</string>
+</resources>
