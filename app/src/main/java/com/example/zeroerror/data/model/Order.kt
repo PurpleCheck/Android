@@ -1,7 +1,11 @@
 package com.example.zeroerror.data.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
 data class Order(
-    val itemId: Int,
+    @PrimaryKey val itemId: Long,
     val brandName: String,
     val itemName: String,
     val totalCount: Int,
