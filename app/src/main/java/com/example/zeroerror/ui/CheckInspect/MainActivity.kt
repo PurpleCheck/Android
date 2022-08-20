@@ -5,8 +5,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.example.zeroerror.R
+import com.example.zeroerror.data.exampleDataList
+import com.example.zeroerror.data.persistence.AppDatabase
 import com.example.zeroerror.databinding.ActivityMainBinding
 import com.example.zeroerror.ui.CheckProduct.CheckProductActivity
 import com.google.zxing.BarcodeFormat
@@ -15,6 +18,7 @@ import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.DefaultDecoderFactory
+import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,6 +57,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // barcode decode 처리하는 callback 함수
+    @OptIn(DelicateCoroutinesApi::class)
     private val callback: BarcodeCallback = object: BarcodeCallback{
 
         override fun barcodeResult(result: BarcodeResult) {
@@ -61,6 +66,15 @@ class MainActivity : AppCompatActivity() {
             }
             else{
                 // API response Success
+                val db = AppDatabase.getInstance(applicationContext)
+
+                val job = GlobalScope.launch(Dispatchers.IO) {
+                    db?.InspectDao()?.insertInspectItem(exampleDataList.inspectList[0])
+                    db?.orderDao()?.insertOrderList(exampleDataList.inspectList[0].orderList)
+                }
+                runBlocking {
+                    job.join()
+                }
                 val intent = Intent(applicationContext, CheckProductActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
