@@ -14,13 +14,6 @@ class GlobalApplication : Application(){
     override fun onCreate() {
         super.onCreate()
         appInstance = this
-
-        appDatabaseInstance = Room.databaseBuilder(
-            appInstance.applicationContext,
-            AppDatabase::class.java, "zeroError.db"
-        )
-            .fallbackToDestructiveMigration()
-            .allowMainThreadQueries()
-            .build()
+        appDatabaseInstance = AppDatabase.getInstance(applicationContext)!!
     }
 }
