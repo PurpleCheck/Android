@@ -41,7 +41,7 @@ class CheckTrackingActivity: AppCompatActivity() {
         // 3. ToolBar Setting & Change ToolBar title
         setSupportActionBar(binding.tbCheckTracking)
         supportActionBar?.apply {
-            title = "송장 검수${invoiceNumber}"
+            title = "Scan Tracking Id"
             setVisible(true)
         }
 
