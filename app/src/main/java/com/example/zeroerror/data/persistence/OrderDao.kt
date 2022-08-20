@@ -1,6 +1,7 @@
 package com.example.zeroerror.data.persistence
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import com.example.zeroerror.data.model.Order
 
@@ -13,8 +14,8 @@ interface OrderDao {
     fun updateOrderItem(order: Order)
 
     @Query("SELECT * FROM `Order`")
-    fun getOrderList(): LiveData<List<Order>>
+    fun getOrderList(): List<Order>
 
     @Query("SELECT itemId FROM `Order`")
-    fun getOrderIdList(): LiveData<List<Int>>
+    fun getOrderIdList(): List<Int>
 }

@@ -10,6 +10,9 @@ interface InspectDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertInspectItem(inspectItem: Inspect)
 
+    @Query("SELECT * from Inspect")
+    fun getInspectItem(): Inspect
+
     @Query("SELECT trackingId from Inspect")
     fun getTrackingId(): String
 
@@ -17,5 +20,5 @@ interface InspectDao {
     fun getTotalCount(): Int
 
     @Update
-    fun updateCheckCount(checkCount: Int)
+    fun updateCheckCount(inspectItem: Inspect)
 }
