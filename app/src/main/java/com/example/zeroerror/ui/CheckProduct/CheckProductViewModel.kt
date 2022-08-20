@@ -1,51 +1,43 @@
 package com.example.zeroerror.ui.CheckProduct
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.zeroerror.data.exampleDataList
-import com.example.zeroerror.data.model.Inspect
+import androidx.lifecycle.*
 import com.example.zeroerror.data.model.Order
+import com.example.zeroerror.data.repository.InspectRepositoryImpl
+import com.example.zeroerror.data.repository.OrderRepositoryImpl
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CheckProductViewModel: ViewModel() {
+@HiltViewModel
+class CheckProductViewModel @Inject constructor(
+    private val orderRepository: OrderRepositoryImpl,
+    private val inspectRepository: InspectRepositoryImpl): ViewModel() {
 
-    var invoiceNumber= MutableLiveData<String>()
+    val productList = orderRepository.getOrderList()
+    val inspectItem = inspectRepository.getInspectItem()
+    val productIdList = orderRepository.getOrderIdList()
+    val productListTotalCount = inspectRepository.getTotalCount()
+    val productListCheckedCount= inspectRepository.getCheckCount()
+    val trackingId = inspectRepository.getTrackingId()
 
-    private val mLiveProductList = MutableLiveData<ArrayList<Order>>()
-    var mProductList = arrayListOf<Order>()
+    val restCount: LiveData<Int> =
+        combine(productListTotalCount.asFlow(), productListCheckedCount.asFlow()){ total, check ->
+            total - check
+    }.asLiveData()
 
-    val productList : LiveData<ArrayList<Order>>
-        get(){
-            return mLiveProductList
-        }
-
-    val productIdList = mutableListOf<String>()
-
-    var productListTotalCount = MutableLiveData<Int>()
-
-    val productListCheckedCount = MutableLiveData<Int>()
-
-    val inspectItem = MutableLiveData<Inspect>()
-
-    init{
-        mProductList = ArrayList(exampleDataList.inspectList[0].orderList)
-        mLiveProductList.value = mProductList
-        invoiceNumber.value = exampleDataList.inspectList[0].trackingId
-        productListTotalCount.value = exampleDataList.inspectList[0].totalCount
-        productListCheckedCount.value = exampleDataList.inspectList[0].checkCount
-        inspectItem.value = exampleDataList.inspectList[0]
-
-        for(item in productList.value!!){
-            productIdList.add(item.itemId.toString())
-        }
-    }
+    val progress: LiveData<Int> =
+        combine(productListTotalCount.asFlow(), productListCheckedCount.asFlow()){ total, check ->
+            ((check.toFloat() / total.toFloat())*100.0f).toInt()
+        }.asLiveData()
 
     // item별 checkCount 증가
     fun updateCount(order:Order){
         if(order.checkCount!=order.totalCount){
             order.checkCount+=1
-            mLiveProductList.value = mProductList
+            viewModelScope.launch {
+                orderRepository.updateOrderItem(order)
+            }
         }
     }
 
@@ -53,13 +45,18 @@ class CheckProductViewModel: ViewModel() {
     fun updateIsChecked(order:Order){
         if(!order.isChecked && order.checkCount==order.totalCount){
             order.isChecked = true
-            mLiveProductList.value = mProductList
+            viewModelScope.launch {
+                orderRepository.updateOrderItem(order)
+            }
         }
     }
 
     // 전체 검수 상품 중 검수 완료된 상품 수량 증가
     fun updateListCheckedCount(){
         inspectItem.value!!.checkCount += 1
-        productListCheckedCount.value = inspectItem.value!!.checkCount
+        productListCheckedCount.value?.plus(1)
+        viewModelScope.launch {
+            inspectRepository.updateCheckCount(inspectItem.value!!)
+        }
     }
 }

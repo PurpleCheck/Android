@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.example.zeroerror.R
 import com.example.zeroerror.databinding.FragmentScanproductBinding
 import com.example.zeroerror.ui.CheckTracking.CheckTrackingActivity
@@ -20,12 +22,16 @@ import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.DefaultDecoderFactory
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ScanProductFragment : Fragment(){
 
     private lateinit var beepManager: BeepManager
     private lateinit var barcodeView: DecoratedBarcodeView
-    private lateinit var viewModel: CheckProductViewModel
+
+    // View Model 설정
+    private val viewModel: CheckProductViewModel by viewModels()
     private lateinit var binding: FragmentScanproductBinding
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -39,11 +45,7 @@ class ScanProductFragment : Fragment(){
         // 1. View Binding 설정
         binding = FragmentScanproductBinding.inflate(inflater, container, false)
 
-        // 2. View Model 설정
-        viewModel = ViewModelProvider(requireActivity(), ViewModelProvider.NewInstanceFactory()) .get(
-            CheckProductViewModel::class.java)
-
-        // 3. scanner 설정
+        // 2. scanner 설정
         beepManager = BeepManager(activity)
 
         barcodeView = binding.bvCheckProduct
@@ -53,31 +55,8 @@ class ScanProductFragment : Fragment(){
         barcodeView.initializeFromIntent(activity?.intent)
         barcodeView.decodeContinuous(callback)
 
-        // 4. UI 변경
+        // 3. UI 변경
         binding.tvCurrentProductName.text = getString(R.string.product_list_current_check)
-        binding.tvTotalCount.text = "/"+viewModel.productListTotalCount.value.toString()
-        binding.tvCheckedCount.text = viewModel.productListCheckedCount.value.toString()
-        binding.tvSmallComent.text = "목표 도달까지 ${viewModel.productListTotalCount.value!! - viewModel.productListCheckedCount.value!!}개 더!"
-        val progressValue = (viewModel.productListCheckedCount.value!!.toFloat() / viewModel.productListTotalCount.value!!.toFloat() * 100.0f).toInt()
-        binding.pbCheckProgress.progress = progressValue
-
-        // progress에 따라 멘트 변경
-        when(progressValue){
-            in 0..20 -> binding.tvComment.text = getString(R.string.product_list_comment1)
-            in 20..40 -> binding.tvComment.text = getString(R.string.product_list_comment2)
-            in 40..60 -> binding.tvComment.text = getString(R.string.product_list_comment3)
-            in 60..80 -> binding.tvComment.text = getString(R.string.product_list_comment4)
-            in 80..100 -> binding.tvComment.text = getString(R.string.product_list_comment5)
-        }
-
-        // 5. 모든 order가 검수 된 상태
-        if(viewModel.mProductList.filter {it.isChecked}.toList().count()==viewModel.mProductList.count()){
-            val intent = Intent(activity, CheckTrackingActivity::class.java)
-            intent.putExtra("InvoiceNumber", viewModel.invoiceNumber.value)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            activity?.finish()
-        }
 
         return binding.root
     }
@@ -91,10 +70,10 @@ class ScanProductFragment : Fragment(){
                 return
             }
             // 인식한 바코드가 orderList에 있는 경우 - 올바른 상품
-            else if(viewModel.productIdList.contains(result.text)){
+            else if(viewModel.productIdList.value!!.map { it.toString() }.contains(result.text)){
 
                 // 인식한 바코드의 order 찾기
-                val order = viewModel.mProductList.filter { it->it.itemId.toString()==result.text }[0]
+                val order = viewModel.productList.value!!.filter { it.itemId.toString()==result.text }[0]
 
                 binding.tvCurrentProductName.text = getString(R.string.product_list_current_check) + " " + order.itemName
 
@@ -107,14 +86,11 @@ class ScanProductFragment : Fragment(){
 
                     // UI Update
                     binding.tvCheckedCount.text = viewModel.productListCheckedCount.value.toString()
-                    binding.tvSmallComent.text =
-                        "목표 도달까지 ${viewModel.productListTotalCount.value!! - viewModel.productListCheckedCount.value!!}개 더!"
-                    val progressValue =
-                        (viewModel.productListCheckedCount.value!!.toFloat() / viewModel.productListTotalCount.value!!.toFloat() * 100.0f).toInt()
-                    binding.pbCheckProgress.progress = progressValue
+                    binding.tvSmallComent.text = "목표 도달까지 ${viewModel.restCount.value}개 더!"
+                    binding.pbCheckProgress.progress = viewModel.progress.value!!
 
                     // progress에 따라 멘트 변경
-                    when (progressValue) {
+                    when (viewModel.progress.value!!) {
                         in 0..20 -> binding.tvComment.text =
                             getString(R.string.product_list_comment1)
                         in 20..40 -> binding.tvComment.text =
@@ -133,11 +109,11 @@ class ScanProductFragment : Fragment(){
                     }
 
                     // 모든 order가 검수 된 상태 => 화면 이동
-                    if (viewModel.mProductList.filter { it.isChecked }.toList()
-                            .count() == viewModel.mProductList.count()
+                    if (viewModel.productList.value!!.filter { it.isChecked }.toList()
+                            .count() == viewModel.productList.value!!.count()
                     ) {
                         val intent = Intent(activity, CheckTrackingActivity::class.java)
-                        intent.putExtra("InvoiceNumber", viewModel.invoiceNumber.value)
+                        intent.putExtra("InvoiceNumber", viewModel.trackingId.value)
                         intent.flags =
                             Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
@@ -171,4 +147,57 @@ class ScanProductFragment : Fragment(){
         super.onPause()
         barcodeView.pause()
     }
+
+    // View Model Item Observe
+    @SuppressLint("SetTextI18n")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.productList.observe(viewLifecycleOwner, Observer{
+            // 4. 모든 order가 검수 된 상태
+            if(viewModel.productList.value!!.filter {it.isChecked}.toList().count()==viewModel.productList.value!!.count()){
+                val intent = Intent(activity, CheckTrackingActivity::class.java)
+                intent.putExtra("InvoiceNumber", viewModel.trackingId.value)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                activity?.finish()
+            }
+        })
+
+        viewModel.inspectItem.observe(viewLifecycleOwner, Observer {
+        })
+
+        viewModel.productListTotalCount.observe(viewLifecycleOwner, Observer {
+            binding.tvTotalCount.text = "/"+viewModel.productListTotalCount.value.toString()
+
+        })
+
+        viewModel.productListCheckedCount.observe(viewLifecycleOwner, Observer{
+            binding.tvCheckedCount.text = viewModel.productListCheckedCount.value.toString()
+        })
+
+        viewModel.restCount.observe(viewLifecycleOwner, Observer{
+            binding.tvSmallComent.text = "목표 도달까지 ${viewModel.restCount.value}개 더!"
+        })
+
+        viewModel.progress.observe(viewLifecycleOwner, Observer{
+            binding.pbCheckProgress.progress = viewModel.progress.value!!
+            when(viewModel.progress.value!!){
+                in 0..20 -> binding.tvComment.text = getString(R.string.product_list_comment1)
+                in 20..40 -> binding.tvComment.text = getString(R.string.product_list_comment2)
+                in 40..60 -> binding.tvComment.text = getString(R.string.product_list_comment3)
+                in 60..80 -> binding.tvComment.text = getString(R.string.product_list_comment4)
+                in 80..100 -> binding.tvComment.text = getString(R.string.product_list_comment5)
+            }
+        })
+
+        viewModel.productIdList.observe(viewLifecycleOwner, Observer{
+
+        })
+
+        viewModel.trackingId.observe(viewLifecycleOwner, Observer {
+
+        })
+    }
+
 }
