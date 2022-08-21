@@ -5,9 +5,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.example.zeroerror.R
 import com.example.zeroerror.data.exampleDataList
+import com.example.zeroerror.data.model.Inspect
+import com.example.zeroerror.data.network.RetrofitService
 import com.example.zeroerror.data.persistence.AppDatabase
 import com.example.zeroerror.databinding.ActivityMainBinding
 import com.example.zeroerror.ui.CheckProduct.CheckProductActivity
@@ -19,6 +22,10 @@ import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.DefaultDecoderFactory
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -27,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var barcodeView: DecoratedBarcodeView
     private lateinit var binding: ActivityMainBinding
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -54,11 +62,22 @@ class MainActivity : AppCompatActivity() {
             this.requestPermissions(arrayOf(Manifest.permission.CAMERA), 123)
         }
 
+        //4. DB 초기화
+        val db = AppDatabase.getInstance(applicationContext)
+
+        val job = GlobalScope.launch(Dispatchers.IO) {
+            db?.InspectDao()?.deleteInspectItem()
+            db?.orderDao()?.deleteAllOrderList()
+        }
+
+        runBlocking {
+            job.join()
+        }
+
         setContentView(binding.root)
     }
 
     // barcode decode 처리하는 callback 함수
-    @OptIn(DelicateCoroutinesApi::class)
     private val callback: BarcodeCallback = object: BarcodeCallback{
 
         override fun barcodeResult(result: BarcodeResult) {
@@ -66,27 +85,53 @@ class MainActivity : AppCompatActivity() {
                 return
             }
             else{
-                // API response Success
-                val db = AppDatabase.getInstance(applicationContext)
-
-                val job = GlobalScope.launch(Dispatchers.IO) {
-                    db?.InspectDao()?.insertInspectItem(exampleDataList.inspectList[0])
-                    db?.orderDao()?.insertOrderList(exampleDataList.inspectList[0].orderList)
-                }
-                runBlocking {
-                    job.join()
-                }
-                val intent = Intent(applicationContext, CheckProductActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
-
-                // API response Fail
-                Toast.makeText(applicationContext, "Inspect Id를 다시 스캔해주세요", Toast.LENGTH_LONG).show()
+                getInspectItem(result.text.toLong())
             }
             barcodeView.setStatusText(result.text)
             beepManager.playBeepSoundAndVibrate()
+            Thread.sleep(2500L)
         }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun getInspectItem(inspectId: Long){
+        RetrofitService.orderAPI.getInspectItem(inspectId = inspectId).enqueue(
+            object: Callback<Inspect> {
+                override fun onResponse(call: Call<Inspect>, response: Response<Inspect>) {
+                    if (response.isSuccessful) {
+                        if (response.code() == 200) {
+                            val body = response.body()
+                            body?.let{
+                                Log.d("BODY", body.toString())
+                                // db에 insert
+                                val db = AppDatabase.getInstance(applicationContext)
+
+                                val job = GlobalScope.launch(Dispatchers.IO) {
+                                    db?.InspectDao()?.insertInspectItem(body)
+                                    db?.orderDao()?.insertOrderList(body.orderList)
+                                }
+
+                                runBlocking {
+                                    job.join()
+                                }
+                                // Product Scan 화면으로 전환
+                                val intent = Intent(applicationContext, CheckProductActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
+                                finish()
+                            }
+                        }
+                    } else { // response.code == 400 or 300
+                        Log.e("CLIENT_ERR", response.code().toString())
+                        Toast.makeText(applicationContext, "Inspect Id를 다시 스캔해주세요", Toast.LENGTH_LONG).show()
+                    }
+                }
+                override fun onFailure(call: Call<Inspect>, t: Throwable) {
+                    Log.e("RETROFIT_ERR", t.message.toString())
+                    Toast.makeText(applicationContext, "Inspect Id를 다시 스캔해주세요", Toast.LENGTH_LONG).show()
+                }
+            }
+        )
     }
 
     override fun onRequestPermissionsResult(
@@ -100,6 +145,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         barcodeView.resume()
+        Thread.sleep(1500L)
     }
 
     override fun onPause() {
