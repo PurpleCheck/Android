@@ -32,8 +32,8 @@ class CheckProductViewModel @Inject constructor(
         }.asLiveData()
 
     val inspectId: LiveData<String> =
-        combine(productList.asFlow(), inspectItem.asFlow()){
-                productList, inspectItem-> (inspectItem.inspectId).toString()
+        combine(productList.asFlow(), inspectItem.asFlow(), trackingId.asFlow()){
+                _, inspect, _ -> (inspect.inspectId).toString()
         }.asLiveData()
 
     // item별 checkCount 증가

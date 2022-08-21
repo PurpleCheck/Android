@@ -7,14 +7,16 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.zeroerror.R
 import com.example.zeroerror.ui.CheckInspect.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class WrongProductAlertDialogFragment: DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
         AlertDialog.Builder(requireContext())
             .setMessage(getString(R.string.product_list_wrong_product_dialog))
             .setPositiveButton(getString(R.string.product_list_dialog_ok)) { _,_ ->
-                val intent = Intent(activity, MainActivity::class.java)
+                val intent = Intent(activity?.applicationContext, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
                 activity?.finish()

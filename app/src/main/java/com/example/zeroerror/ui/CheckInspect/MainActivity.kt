@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.example.zeroerror.R
-import com.example.zeroerror.data.exampleDataList
 import com.example.zeroerror.data.model.Inspect
 import com.example.zeroerror.data.network.RetrofitService
 import com.example.zeroerror.data.persistence.AppDatabase
@@ -25,7 +24,6 @@ import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -34,7 +32,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var barcodeView: DecoratedBarcodeView
     private lateinit var binding: ActivityMainBinding
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -60,18 +57,6 @@ class MainActivity : AppCompatActivity() {
         }
         if(applicationContext.checkSelfPermission(Manifest.permission.CAMERA)==PackageManager.PERMISSION_DENIED){
             this.requestPermissions(arrayOf(Manifest.permission.CAMERA), 123)
-        }
-
-        //4. DB 초기화
-        val db = AppDatabase.getInstance(applicationContext)
-
-        val job = GlobalScope.launch(Dispatchers.IO) {
-            db?.InspectDao()?.deleteInspectItem()
-            db?.orderDao()?.deleteAllOrderList()
-        }
-
-        runBlocking {
-            job.join()
         }
 
         setContentView(binding.root)
@@ -107,6 +92,9 @@ class MainActivity : AppCompatActivity() {
                                 val db = AppDatabase.getInstance(applicationContext)
 
                                 val job = GlobalScope.launch(Dispatchers.IO) {
+                                    db?.InspectDao()?.deleteInspectItem()
+                                    db?.orderDao()?.deleteAllOrderList()
+
                                     db?.InspectDao()?.insertInspectItem(body)
                                     db?.orderDao()?.insertOrderList(body.orderList)
                                 }
@@ -145,7 +133,6 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         barcodeView.resume()
-        Thread.sleep(1500L)
     }
 
     override fun onPause() {
