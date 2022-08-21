@@ -113,7 +113,8 @@ class ScanProductFragment : Fragment(){
                             .count() == viewModel.productList.value!!.count()
                     ) {
                         val intent = Intent(activity, CheckTrackingActivity::class.java)
-                        intent.putExtra("InvoiceNumber", viewModel.trackingId.value)
+                        intent.putExtra("trackingId", viewModel.trackingId.value)
+                        intent.putExtra("inspectId", viewModel.inspectItem.value!!.inspectId.toString())
                         intent.flags =
                             Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
@@ -132,7 +133,7 @@ class ScanProductFragment : Fragment(){
 
             barcodeView.setStatusText(result.text)
             beepManager.playBeepSoundAndVibrate()
-            Thread.sleep(1500L)
+            Thread.sleep(2500L)
         }
 
         override fun possibleResultPoints(resultPoints: List<ResultPoint>) {}
@@ -141,6 +142,7 @@ class ScanProductFragment : Fragment(){
     override fun onResume() {
         super.onResume()
         barcodeView.resume()
+        Thread.sleep(1500L)
     }
 
     override fun onPause() {
@@ -196,6 +198,9 @@ class ScanProductFragment : Fragment(){
         })
 
         viewModel.trackingId.observe(viewLifecycleOwner, Observer {
+
+        })
+        viewModel.inspectId.observe(viewLifecycleOwner, Observer{
 
         })
     }
