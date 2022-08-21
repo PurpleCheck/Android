@@ -10,4 +10,5 @@ class OrderRepositoryImpl @Inject constructor(private val orderDao: OrderDao) {
     suspend fun updateOrderItem(order: Order) = orderDao.updateOrderItem(order)
     fun getOrderList() = orderDao.getOrderList()
     fun getOrderIdList(): LiveData<List<Long>> = orderDao.getOrderIdList()
+    suspend fun deleteAllOrderList() = orderDao.deleteAllOrderList()
 }

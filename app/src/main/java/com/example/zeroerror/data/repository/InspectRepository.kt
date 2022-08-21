@@ -12,4 +12,5 @@ class InspectRepositoryImpl @Inject constructor(private val inspectDao: InspectD
     fun getTotalCount(): LiveData<Int>  = inspectDao.getTotalCount()
     fun getInspectItem(): LiveData<Inspect> = inspectDao.getInspectItem()
     suspend fun updateCheckCount(inspectItem: Inspect) = inspectDao.updateCheckCount(inspectItem)
+    suspend fun deleteInspectItem() = inspectDao.deleteInspectItem()
 }
