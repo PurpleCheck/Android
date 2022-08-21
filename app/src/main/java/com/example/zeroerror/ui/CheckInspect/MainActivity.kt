@@ -70,7 +70,11 @@ class MainActivity : AppCompatActivity() {
                 return
             }
             else{
-                getInspectItem(result.text.toLong())
+                try{
+                    getInspectItem(result.text.toLong())
+                }catch (e: NumberFormatException){
+                    Toast.makeText(applicationContext, "Inspect Id 형식을 확인해주세요", Toast.LENGTH_LONG).show()
+                }
             }
             barcodeView.setStatusText(result.text)
             beepManager.playBeepSoundAndVibrate()
@@ -87,7 +91,6 @@ class MainActivity : AppCompatActivity() {
                         if (response.code() == 200) {
                             val body = response.body()
                             body?.let{
-                                Log.d("BODY", body.toString())
                                 // db에 insert
                                 val db = AppDatabase.getInstance(applicationContext)
 

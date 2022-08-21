@@ -1,14 +1,10 @@
 package com.example.zeroerror.ui.CheckTracking
 
-import android.content.Intent
+
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.zeroerror.data.exampleDataList
-import com.example.zeroerror.data.network.RetrofitService
 import com.example.zeroerror.databinding.ActivityChecktrackingBinding
-import com.example.zeroerror.ui.CheckInspect.MainActivity
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.ResultPoint
 import com.google.zxing.client.android.BeepManager
@@ -17,9 +13,6 @@ import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.DefaultDecoderFactory
 import dagger.hilt.android.AndroidEntryPoint
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 @AndroidEntryPoint
 class CheckTrackingActivity: AppCompatActivity() {
@@ -55,7 +48,6 @@ class CheckTrackingActivity: AppCompatActivity() {
             title = "Scan Tracking Id"
             setVisible(true)
         }
-        Log.d("TRACKING", trackingId)
         setContentView(binding.root)
     }
 
