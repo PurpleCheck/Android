@@ -1,4 +1,5 @@
 package com.example.zeroerror.data.model
 
-class FinishResponse {
-}
+data class FinishResponse (
+    val finish: Boolean
+    )
