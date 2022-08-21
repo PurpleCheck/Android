@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     } else { // response.code == 400 or 300
                         Log.e("CLIENT_ERR", response.code().toString())
-                        Toast.makeText(applicationContext, "Inspect Id를 다시 스캔해주세요", Toast.LENGTH_LONG).show()
+                        Toast.makeText(applicationContext, "서버에 없는 Inspect Id입니다", Toast.LENGTH_LONG).show()
                     }
                 }
                 override fun onFailure(call: Call<Inspect>, t: Throwable) {
