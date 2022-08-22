@@ -14,6 +14,8 @@
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="60dp"
+            app:tabTextColor="@color/kurly_purple"
+            app:tabIndicatorColor="@color/kurly_purple"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"

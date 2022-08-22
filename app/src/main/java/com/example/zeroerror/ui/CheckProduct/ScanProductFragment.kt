@@ -8,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.zeroerror.R
 import com.example.zeroerror.databinding.FragmentScanproductBinding
+import com.example.zeroerror.ui.CheckInspect.MainActivity
 import com.example.zeroerror.ui.CheckTracking.CheckTrackingActivity
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.ResultPoint
@@ -22,6 +24,9 @@ import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.DefaultDecoderFactory
 import dagger.hilt.android.AndroidEntryPoint
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @AndroidEntryPoint
 class ScanProductFragment : Fragment(){
@@ -126,8 +131,7 @@ class ScanProductFragment : Fragment(){
                 binding.tvCurrentProductName.text = getString(R.string.product_list_current_check)
 
                 // alert dialog - 사용자에게 잘못된 상품임을 경고
-                val wrongAlertDialog = WrongProductAlertDialogFragment()
-                wrongAlertDialog.show(childFragmentManager,WrongProductAlertDialogFragment.TAG)
+                showWrongProductAlertDialog()
             }
             barcodeView.setStatusText(result.text)
             beepManager.playBeepSoundAndVibrate()
@@ -192,6 +196,24 @@ class ScanProductFragment : Fragment(){
         })
         viewModel.inspectId.observe(viewLifecycleOwner, Observer{
         })
+    }
+
+    private fun showWrongProductAlertDialog(){
+        val alertdialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
+            .setMessage(getString(R.string.product_list_wrong_product_dialog))
+            .setPositiveButton(getString(R.string.product_list_dialog_ok)) { _,_ ->
+                val intent = Intent(activity?.applicationContext, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                activity?.finish()
+            }
+            .setNegativeButton(getString(R.string.product_list_dialog_no)){ DialogInterface, _ ->
+                DialogInterface.dismiss()
+            }
+            .create()
+
+        alertdialog.setCancelable(false)
+        alertdialog.show()
     }
 
 }
