@@ -22,6 +22,9 @@ interface InspectDao {
     @Query("SELECT check_count from `inspect`")
     fun getCheckCount(): LiveData<Int>
 
+    @Query("SELECT complete_yn from `inspect`")
+    fun getCompleteYN(): Boolean
+
     @Query("DELETE FROM `inspect`")
     suspend fun deleteInspectItem()
 

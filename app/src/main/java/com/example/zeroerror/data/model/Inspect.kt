@@ -24,5 +24,7 @@ data class Inspect(
     val totalCount: Int,
     @ColumnInfo(name = "check_count")
     @SerializedName("totalCheckCount")
-    var checkCount: Int
+    var checkCount: Int,
+    @ColumnInfo(name = "complete_yn")
+    val completeYN: Boolean
 )
