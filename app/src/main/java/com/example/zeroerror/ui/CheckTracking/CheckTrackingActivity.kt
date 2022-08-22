@@ -111,11 +111,11 @@ class CheckTrackingActivity: AppCompatActivity() {
                             val body= response.body()
                             body?.let{
                                 if(body.finish){
+                                    Toast.makeText(applicationContext, "검수 스캔 화면으로 돌아갑니다", Toast.LENGTH_LONG).show()
                                     val intent = Intent(applicationContext, MainActivity::class.java)
                                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                     startActivity(intent)
                                     this@CheckTrackingActivity.finish()
-                                    Log.d("FINISH?", "FINISH")
                                 }
                             }
                         }
