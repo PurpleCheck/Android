@@ -1,19 +1,27 @@
 # ZeroError
 
 
-
+**게임 퀘스트 형식으로 검수자의 흥미를 높여 업무 속도를 높이면서 앱 내 스캐너를 통해 상품 & 송장 검수 정확도도 높이는 꼼꼼한 검수 앱**
 
 
 ## Download
 
-**Go to the release page to download the latest available apk**
+**Go to the [release page](https://github.com/PurpleCheck/Android/tree/main/app/release) to download the latest available apk**
 
 
 
 ## Screenshots
 
+- 스캔한 상품이 주문 내역에 존재하지 않을 경우 경고창으로 알림
 
+  <img src="https://user-images.githubusercontent.com/52341650/185955886-ad8856b4-6e6a-4257-b8b9-203476f20b74.gif" width="280" height="600"/>
 
+- 스캔한 상품이 주문 내역에 존재하는 경우
+  1. 검수 번호 (Inspect Id) 스캔
+  2. 주문 내역에 맞게 상품 (Product Id) 스캔 - 달성율과 작업 독려 멘트가 상단에 실시간으로 표시됨
+  3. 송장 번호 (Tracking Id) 스캔 - 상품 & 송장 검수 완료 후 다시 검수 번호 스캔 화면으로 돌아감
+  
+  <img src="https://user-images.githubusercontent.com/52341650/185955906-0f6f6b57-b31b-4474-a6a3-9e6448413228.gif" width="280" height="600"/>
 
 
 ## Stack & Libraries
