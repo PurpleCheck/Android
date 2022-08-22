@@ -2,6 +2,7 @@ package com.example.zeroerror.ui.CheckInspect
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -31,10 +32,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var beepManager: BeepManager
     private lateinit var barcodeView: DecoratedBarcodeView
     private lateinit var binding: ActivityMainBinding
+    private var isChecked: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         // 1. binidng 설정
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -100,16 +103,26 @@ class MainActivity : AppCompatActivity() {
 
                                     db?.InspectDao()?.insertInspectItem(body)
                                     db?.orderDao()?.insertOrderList(body.orderList)
+
+                                    isChecked = db?.InspectDao()?.getCompleteYN()!!
                                 }
 
                                 runBlocking {
                                     job.join()
                                 }
-                                // Product Scan 화면으로 전환
-                                val intent = Intent(applicationContext, CheckProductActivity::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                                finish()
+
+                                // 이미 검수가 완료된 Inspect
+                                if(isChecked){
+                                    Toast.makeText(applicationContext, "이미 검수가 완료된 Inspect Id입니다", Toast.LENGTH_LONG).show()
+                                }
+                                // 검수하지 않은 Inspect
+                                else{
+                                    // Product Scan 화면으로 전환
+                                    val intent = Intent(applicationContext, CheckProductActivity::class.java)
+                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    startActivity(intent)
+                                    finish()
+                                }
                             }
                         }
                     } else { // response.code == 400 or 300

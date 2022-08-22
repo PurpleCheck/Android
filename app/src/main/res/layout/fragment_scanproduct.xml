@@ -11,7 +11,6 @@
         android:gravity="center_vertical"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:text="벌써 검수율 80% 도달!\n얼마 남지 않았어요"
         android:textColor="@color/black"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -70,7 +69,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="bottom"
+            android:gravity="bottom|end"
             android:textColor="@color/black"
             android:textSize="30sp"
             android:textStyle="bold" />

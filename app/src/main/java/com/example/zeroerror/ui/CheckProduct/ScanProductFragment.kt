@@ -8,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.zeroerror.R
 import com.example.zeroerror.databinding.FragmentScanproductBinding
+import com.example.zeroerror.ui.CheckInspect.MainActivity
 import com.example.zeroerror.ui.CheckTracking.CheckTrackingActivity
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.ResultPoint
@@ -90,16 +92,14 @@ class ScanProductFragment : Fragment(){
 
                     // progress에 따라 멘트 변경
                     when (viewModel.progress.value!!) {
-                        in 0..20 -> binding.tvComment.text =
+                        in 0..30 -> binding.tvComment.text =
                             getString(R.string.product_list_comment1)
-                        in 20..40 -> binding.tvComment.text =
+                        in 30..50 -> binding.tvComment.text =
                             getString(R.string.product_list_comment2)
-                        in 40..60 -> binding.tvComment.text =
+                        in 50..80 -> binding.tvComment.text =
                             getString(R.string.product_list_comment3)
-                        in 60..80 -> binding.tvComment.text =
-                            getString(R.string.product_list_comment4)
                         in 80..100 -> binding.tvComment.text =
-                            getString(R.string.product_list_comment5)
+                            getString(R.string.product_list_comment4)
                     }
 
                     // order의 isChecked Update
@@ -126,8 +126,7 @@ class ScanProductFragment : Fragment(){
                 binding.tvCurrentProductName.text = getString(R.string.product_list_current_check)
 
                 // alert dialog - 사용자에게 잘못된 상품임을 경고
-                val wrongAlertDialog = WrongProductAlertDialogFragment()
-                wrongAlertDialog.show(childFragmentManager,WrongProductAlertDialogFragment.TAG)
+                showWrongProductAlertDialog()
             }
             barcodeView.setStatusText(result.text)
             beepManager.playBeepSoundAndVibrate()
@@ -161,7 +160,7 @@ class ScanProductFragment : Fragment(){
         })
 
         viewModel.productListTotalCount.observe(viewLifecycleOwner, Observer {
-            binding.tvTotalCount.text = "/"+viewModel.productListTotalCount.value.toString()
+            binding.tvTotalCount.text = " / "+viewModel.productListTotalCount.value.toString()
 
         })
 
@@ -176,11 +175,10 @@ class ScanProductFragment : Fragment(){
         viewModel.progress.observe(viewLifecycleOwner, Observer{
             binding.pbCheckProgress.progress = viewModel.progress.value!!
             when(viewModel.progress.value!!){
-                in 0..20 -> binding.tvComment.text = getString(R.string.product_list_comment1)
-                in 20..40 -> binding.tvComment.text = getString(R.string.product_list_comment2)
-                in 40..60 -> binding.tvComment.text = getString(R.string.product_list_comment3)
-                in 60..80 -> binding.tvComment.text = getString(R.string.product_list_comment4)
-                in 80..100 -> binding.tvComment.text = getString(R.string.product_list_comment5)
+                in 0..30 -> binding.tvComment.text = getString(R.string.product_list_comment1)
+                in 30..50 -> binding.tvComment.text = getString(R.string.product_list_comment2)
+                in 50..80 -> binding.tvComment.text = getString(R.string.product_list_comment3)
+                in 80..100 -> binding.tvComment.text = getString(R.string.product_list_comment4)
             }
         })
 
@@ -192,6 +190,24 @@ class ScanProductFragment : Fragment(){
         })
         viewModel.inspectId.observe(viewLifecycleOwner, Observer{
         })
+    }
+
+    private fun showWrongProductAlertDialog(){
+        val alertdialog = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
+            .setMessage(getString(R.string.product_list_wrong_product_dialog))
+            .setPositiveButton(getString(R.string.product_list_dialog_ok)) { _,_ ->
+                val intent = Intent(activity?.applicationContext, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                activity?.finish()
+            }
+            .setNegativeButton(getString(R.string.product_list_dialog_no)){ DialogInterface, _ ->
+                DialogInterface.dismiss()
+            }
+            .create()
+
+        alertdialog.setCancelable(false)
+        alertdialog.show()
     }
 
 }
