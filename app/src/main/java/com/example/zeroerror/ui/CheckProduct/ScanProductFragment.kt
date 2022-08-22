@@ -92,16 +92,14 @@ class ScanProductFragment : Fragment(){
 
                     // progress에 따라 멘트 변경
                     when (viewModel.progress.value!!) {
-                        in 0..20 -> binding.tvComment.text =
+                        in 0..30 -> binding.tvComment.text =
                             getString(R.string.product_list_comment1)
-                        in 20..40 -> binding.tvComment.text =
+                        in 30..50 -> binding.tvComment.text =
                             getString(R.string.product_list_comment2)
-                        in 40..60 -> binding.tvComment.text =
+                        in 50..80 -> binding.tvComment.text =
                             getString(R.string.product_list_comment3)
-                        in 60..80 -> binding.tvComment.text =
-                            getString(R.string.product_list_comment4)
                         in 80..100 -> binding.tvComment.text =
-                            getString(R.string.product_list_comment5)
+                            getString(R.string.product_list_comment4)
                     }
 
                     // order의 isChecked Update
@@ -177,11 +175,10 @@ class ScanProductFragment : Fragment(){
         viewModel.progress.observe(viewLifecycleOwner, Observer{
             binding.pbCheckProgress.progress = viewModel.progress.value!!
             when(viewModel.progress.value!!){
-                in 0..20 -> binding.tvComment.text = getString(R.string.product_list_comment1)
-                in 20..40 -> binding.tvComment.text = getString(R.string.product_list_comment2)
-                in 40..60 -> binding.tvComment.text = getString(R.string.product_list_comment3)
-                in 60..80 -> binding.tvComment.text = getString(R.string.product_list_comment4)
-                in 80..100 -> binding.tvComment.text = getString(R.string.product_list_comment5)
+                in 0..30 -> binding.tvComment.text = getString(R.string.product_list_comment1)
+                in 30..50 -> binding.tvComment.text = getString(R.string.product_list_comment2)
+                in 50..80 -> binding.tvComment.text = getString(R.string.product_list_comment3)
+                in 80..100 -> binding.tvComment.text = getString(R.string.product_list_comment4)
             }
         })
 

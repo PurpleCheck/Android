@@ -11,11 +11,10 @@
     <string name="product_list_wrong_product_dialog">주문 내역에 없는 상품입니다.\n해당 검수를 미루시겠습니까?</string>
     <string name="product_list_dialog_ok">예 미룰게요</string>
     <string name="product_list_dialog_no">아니요 계속할게요</string>
-    <string name="product_list_comment1">1번 멘트</string>
-    <string name="product_list_comment2">2번 멘트</string>
-    <string name="product_list_comment3">3번 멘트</string>
-    <string name="product_list_comment4">4번 멘트</string>
-    <string name="product_list_comment5">5번 멘트</string>
+    <string name="product_list_comment1">검수를 시작해볼까요?</string>
+    <string name="product_list_comment2">어느새 30% 달성!\n빠르게 채워지고 있어요</string>
+    <string name="product_list_comment3">벌써 50% 달성!\n절반이나 지나갔어요</string>
+    <string name="product_list_comment4">드디어 80% 달성!\n얼마 남지 않았어요</string>
 
 
     <string name="tracking_confirm">모든 상품과 송장 검수가 완료되었습니다</string>
