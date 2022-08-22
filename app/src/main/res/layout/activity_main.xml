@@ -10,18 +10,49 @@
         android:id="@+id/tbCheckInspect"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@color/kurly_purple"
+        app:layout_constraintBottom_toTopOf="@+id/tvInspectTitle"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@color/white" />
+
+    <TextView
+        android:id="@+id/tvInspectTitle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        android:text="@string/inspect_title"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tvInspectInfo"
+        app:layout_constraintTop_toBottomOf="@+id/tbCheckInspect"
+        app:layout_constraintVertical_weight="1"/>
+
+    <TextView
+        android:id="@+id/tvInspectInfo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="15dp"
+        android:gravity="center_vertical"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        android:text="@string/inspect_info"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/bvCheckInspect"
+        app:layout_constraintTop_toBottomOf="@+id/tvInspectTitle"
+        app:layout_constraintVertical_weight="1"/>
 
     <com.journeyapps.barcodescanner.DecoratedBarcodeView
         android:id="@+id/bvCheckInspect"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/tbCheckInspect"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvInspectInfo"
+        app:layout_constraintVertical_weight="14"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">ZeroError</string>
 
+    <string name="inspect_title">검수 번호를 스캔해주세요</string>
+    <string name="inspect_info">검수 번호를 성공적으로 인식하면\n검수할 상품 목록들을 불러와요</string>
+
     <string name="product_list_current_check">방금 검수한 상품 : </string>
     <string name="product_list_title">검수할 주문 내역 목록이에요</string>
     <string name="product_list_info">각 상품당 수량에 맞게 검수가 완료되면 \n상품 상자가 회색으로 바뀌어요</string>
@@ -15,6 +18,8 @@
     <string name="product_list_comment5">5번 멘트</string>
 
 
-    <string name="invoice_confirm">모든 상품과 송장 검수가 완료되었습니다</string>
-    <string name="invoice_confirm_ok">확인</string>
+    <string name="tracking_confirm">모든 상품과 송장 검수가 완료되었습니다</string>
+    <string name="tracking_confirm_ok">확인</string>
+    <string name="tracking_title">송장 번호를 스캔해주세요</string>
+    <string name="tracking_info">송장 번호 스캔 후 알림창의 확인 버튼을 누르면\n검수가 완료돼요</string>
 </resources>

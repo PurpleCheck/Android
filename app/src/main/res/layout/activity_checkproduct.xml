@@ -10,6 +10,8 @@
         android:id="@+id/tbCheckProduct"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:background="@color/kurly_purple"
+        app:titleTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
