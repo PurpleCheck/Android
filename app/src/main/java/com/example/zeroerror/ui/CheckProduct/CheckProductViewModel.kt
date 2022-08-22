@@ -31,6 +31,11 @@ class CheckProductViewModel @Inject constructor(
             ((check.toFloat() / total.toFloat())*100.0f).toInt()
         }.asLiveData()
 
+    val inspectId: LiveData<String> =
+        combine(productList.asFlow(), inspectItem.asFlow(), trackingId.asFlow()){
+                _, inspect, _ -> (inspect.inspectId).toString()
+        }.asLiveData()
+
     // item별 checkCount 증가
     fun updateCount(order:Order){
         if(order.checkCount!=order.totalCount){

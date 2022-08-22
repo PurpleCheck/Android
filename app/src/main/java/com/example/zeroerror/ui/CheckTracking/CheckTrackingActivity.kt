@@ -1,9 +1,9 @@
 package com.example.zeroerror.ui.CheckTracking
 
+
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.zeroerror.data.exampleDataList
 import com.example.zeroerror.databinding.ActivityChecktrackingBinding
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.ResultPoint
@@ -20,7 +20,8 @@ class CheckTrackingActivity: AppCompatActivity() {
     private lateinit var beepManager: BeepManager
     private lateinit var barcodeView: DecoratedBarcodeView
     private lateinit var binding: ActivityChecktrackingBinding
-    private lateinit var invoiceNumber: String
+    private lateinit var trackingId: String
+    private lateinit var inspectId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +39,8 @@ class CheckTrackingActivity: AppCompatActivity() {
         barcodeView.initializeFromIntent(this.intent)
         barcodeView.decodeContinuous(callback)
 
-        invoiceNumber = intent.getStringExtra("InvoiceNumber").toString()
+        trackingId = intent.getStringExtra("trackingId").toString()
+        inspectId = intent.getStringExtra("inspectId").toString()
 
         // 3. ToolBar Setting & Change ToolBar title
         setSupportActionBar(binding.tbCheckTracking)
@@ -46,7 +48,6 @@ class CheckTrackingActivity: AppCompatActivity() {
             title = "Scan Tracking Id"
             setVisible(true)
         }
-
         setContentView(binding.root)
     }
 
@@ -57,10 +58,10 @@ class CheckTrackingActivity: AppCompatActivity() {
                 return
             }
             // 인식한 바코드가 서버에 저장 된 송장번호일 때 - 올바른 송장
-            else if(result.text.equals(exampleDataList.inspectList[0].trackingId)){
+            else if(result.text.equals(trackingId)){
                 // 검수 confirm alert dialog 띄우기
-                val confirmCheckAlertDialog = ConfirmCheckAlertDialogFragment()
-                confirmCheckAlertDialog.show(supportFragmentManager, ConfirmCheckAlertDialogFragment.TAG )
+                val confirmCheckAlertDialog = ConfirmCheckAlertDialogFragment.newInstance(inspectId)
+                confirmCheckAlertDialog.show(supportFragmentManager, ConfirmCheckAlertDialogFragment.TAG)
             }
             // 인식한 바코드가 서버에 없는 송장번호일 때 - 잘못된 송장
             else{
@@ -69,7 +70,7 @@ class CheckTrackingActivity: AppCompatActivity() {
 
             barcodeView.setStatusText(result.text)
             beepManager.playBeepSoundAndVibrate()
-            Thread.sleep(1500L)
+            Thread.sleep(2500L)
         }
 
         override fun possibleResultPoints(resultPoints: List<ResultPoint>) {}
@@ -78,6 +79,7 @@ class CheckTrackingActivity: AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         barcodeView.resume()
+        Thread.sleep(1500L)
     }
 
     override fun onPause() {

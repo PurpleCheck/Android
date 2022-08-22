@@ -3,13 +3,9 @@ package com.example.zeroerror.data.persistence
 
 import android.content.Context
 import androidx.room.*
-import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.zeroerror.data.exampleDataList
 import com.example.zeroerror.data.model.Inspect
 import com.example.zeroerror.data.model.Order
 import com.google.gson.Gson
-import kotlinx.coroutines.runBlocking
-import java.util.concurrent.Executors
 
 @Database(entities = [Order::class, Inspect::class], version = 1, exportSchema = false)
 @TypeConverters(OrderListTypeConverter::class)
@@ -23,20 +19,8 @@ abstract class AppDatabase : RoomDatabase() {
         fun getInstance(context: Context): AppDatabase ? {
             if(INSTANCE==null){
                 INSTANCE= Room
-                    .databaseBuilder(context, AppDatabase::class.java, "kim_ready.db")
+                    .databaseBuilder(context, AppDatabase::class.java, "zero_error.db")
                     .addTypeConverter(OrderListTypeConverter(Gson()))
-                    .addCallback(object : Callback() {
-                        override fun onCreate(db: SupportSQLiteDatabase) {
-                            super.onCreate(db)
-
-                            Executors.newSingleThreadExecutor().execute {
-                                runBlocking {
-                                    INSTANCE!!.orderDao().insertOrderList(exampleDataList.inspectList[0].orderList)
-                                    INSTANCE!!.InspectDao().insertInspectItem(exampleDataList.inspectList[0])
-                                }
-                            }
-                        }
-                    })
                     .build()
             }
             return INSTANCE

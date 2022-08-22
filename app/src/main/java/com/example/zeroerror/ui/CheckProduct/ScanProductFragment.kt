@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -112,8 +111,9 @@ class ScanProductFragment : Fragment(){
                     if (viewModel.productList.value!!.filter { it.isChecked }.toList()
                             .count() == viewModel.productList.value!!.count()
                     ) {
-                        val intent = Intent(activity, CheckTrackingActivity::class.java)
-                        intent.putExtra("InvoiceNumber", viewModel.trackingId.value)
+                        val intent = Intent(activity?.applicationContext, CheckTrackingActivity::class.java)
+                        intent.putExtra("trackingId", viewModel.trackingId.value)
+                        intent.putExtra("inspectId", viewModel.inspectItem.value!!.inspectId.toString())
                         intent.flags =
                             Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
@@ -127,12 +127,11 @@ class ScanProductFragment : Fragment(){
 
                 // alert dialog - 사용자에게 잘못된 상품임을 경고
                 val wrongAlertDialog = WrongProductAlertDialogFragment()
-                wrongAlertDialog.show(childFragmentManager,WrongProductAlertDialogFragment.TAG )
+                wrongAlertDialog.show(childFragmentManager,WrongProductAlertDialogFragment.TAG)
             }
-
             barcodeView.setStatusText(result.text)
             beepManager.playBeepSoundAndVibrate()
-            Thread.sleep(1500L)
+            Thread.sleep(2500L)
         }
 
         override fun possibleResultPoints(resultPoints: List<ResultPoint>) {}
@@ -141,6 +140,7 @@ class ScanProductFragment : Fragment(){
     override fun onResume() {
         super.onResume()
         barcodeView.resume()
+        Thread.sleep(1500L)
     }
 
     override fun onPause() {
@@ -154,14 +154,7 @@ class ScanProductFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.productList.observe(viewLifecycleOwner, Observer{
-            // 4. 모든 order가 검수 된 상태
-            if(viewModel.productList.value!!.filter {it.isChecked}.toList().count()==viewModel.productList.value!!.count()){
-                val intent = Intent(activity, CheckTrackingActivity::class.java)
-                intent.putExtra("InvoiceNumber", viewModel.trackingId.value)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                activity?.finish()
-            }
+
         })
 
         viewModel.inspectItem.observe(viewLifecycleOwner, Observer {
@@ -192,11 +185,12 @@ class ScanProductFragment : Fragment(){
         })
 
         viewModel.productIdList.observe(viewLifecycleOwner, Observer{
-
         })
 
         viewModel.trackingId.observe(viewLifecycleOwner, Observer {
 
+        })
+        viewModel.inspectId.observe(viewLifecycleOwner, Observer{
         })
     }
 

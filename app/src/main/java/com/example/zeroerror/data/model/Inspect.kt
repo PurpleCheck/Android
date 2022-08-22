@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.example.zeroerror.data.persistence.OrderListTypeConverter
+import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "inspect")
 data class Inspect(
@@ -17,9 +18,11 @@ data class Inspect(
     val trackingId: String,
     @ColumnInfo(name = "order_list")
     @TypeConverters(OrderListTypeConverter::class)
+    @SerializedName("orderItemFormList")
     val orderList: List<Order>,
     @ColumnInfo(name="total_count")
     val totalCount: Int,
     @ColumnInfo(name = "check_count")
+    @SerializedName("totalCheckCount")
     var checkCount: Int
 )
