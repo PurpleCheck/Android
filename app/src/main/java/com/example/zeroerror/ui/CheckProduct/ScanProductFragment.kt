@@ -162,7 +162,7 @@ class ScanProductFragment : Fragment(){
         })
 
         viewModel.productListTotalCount.observe(viewLifecycleOwner, Observer {
-            binding.tvTotalCount.text = "/"+viewModel.productListTotalCount.value.toString()
+            binding.tvTotalCount.text = " / "+viewModel.productListTotalCount.value.toString()
 
         })
 
