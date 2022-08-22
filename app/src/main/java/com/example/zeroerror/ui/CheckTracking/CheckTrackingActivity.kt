@@ -1,6 +1,7 @@
 package com.example.zeroerror.ui.CheckTracking
 
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,7 @@ class CheckTrackingActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         // 1. binding 설정
         binding = ActivityChecktrackingBinding.inflate(layoutInflater)

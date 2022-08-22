@@ -1,5 +1,6 @@
 package com.example.zeroerror.ui.CheckProduct
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
@@ -16,6 +17,7 @@ class CheckProductActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         // 1. View Binding 설정
         binding = ActivityCheckproductBinding.inflate(layoutInflater)
