@@ -22,6 +22,14 @@
   3. 송장 번호 (Tracking Id) 스캔 - 상품 & 송장 검수 완료 후 다시 검수 번호 스캔 화면으로 돌아감
   
   <img src="https://user-images.githubusercontent.com/52341650/185955906-0f6f6b57-b31b-4474-a6a3-9e6448413228.gif" width="280" height="600"/>
+  
+- 전체 화면 설명
+  <br/>
+  <img src="https://user-images.githubusercontent.com/52341650/198842104-6598a94b-fca5-4b62-b313-e2fb2164600f.png" width="600" height="400"/>
+  
+  <img src="https://user-images.githubusercontent.com/52341650/198842103-4b96dd1b-0ee0-4577-b7aa-a2a256f56500.png" width="680" height="420"/>
+  
+  <img src="https://user-images.githubusercontent.com/52341650/198842101-c272ea8a-af7c-451a-a660-609838f9bc4e.png" width="600" height="380"/>
 
 
 ## Stack & Libraries
